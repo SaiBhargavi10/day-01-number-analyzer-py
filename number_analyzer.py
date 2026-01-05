@@ -1,16 +1,17 @@
+import sys
 import statistics
 
-def read_numbers():
-    raw_input = input("Enter numbers (separated by space or comma): ")
-    parts = raw_input.replace(",", " ").split()
+def read_numbers_from_input():
+    user_input = input("Enter numbers (space or comma separated): ")
+    return user_input.replace(",", " ").split()
 
+def parse_numbers(values):
     numbers = []
-    for part in parts:
+    for value in values:
         try:
-            numbers.append(float(part))
+            numbers.append(float(value))
         except ValueError:
-            print(f"Ignoring invalid value: {part}")
-
+            print(f"Ignoring invalid value: {value}")
     return numbers
 
 def analyze(numbers):
@@ -22,31 +23,36 @@ def analyze(numbers):
         "avg": sum(numbers) / len(numbers),
         "median": statistics.median(numbers),
         "range": max(numbers) - min(numbers),
+        "sorted": sorted(numbers),
     }
-
 
 def show_result(stats):
     print("\nNumber Analysis")
-    print("-" * 25)
-    print(f"Count   : {stats['count']}")
-    print(f"Min     : {stats['min']}")
-    print(f"Max     : {stats['max']}")
-    print(f"Sum     : {stats['sum']}")
-    print(f"Average : {stats['avg']:.2f}")
-    print(f"Median  : {stats['median']}")
-    print(f"Range   : {stats['range']}")
-    print("-" * 25)
-
+    print("-" * 30)
+    print(f"Count          : {stats['count']}")
+    print(f"Minimum        : {stats['min']:.2f}")
+    print(f"Maximum        : {stats['max']:.2f}")
+    print(f"Sum            : {stats['sum']:.2f}")
+    print(f"Average        : {stats['avg']:.2f}")
+    print(f"Median         : {stats['median']:.2f}")
+    print(f"Range          : {stats['range']:.2f}")
+    print(f"Sorted Numbers : {stats['sorted']}")
+    print("-" * 30)
 
 def main():
-    numbers = read_numbers()
+    if len(sys.argv) > 1:
+        raw_values = sys.argv[1:]
+    else:
+        raw_values = read_numbers_from_input()
+
+    numbers = parse_numbers(raw_values)
+
     if not numbers:
-        print("No valid numbers provided.")
+        print("No valid numeric values were provided.")
         return
 
     stats = analyze(numbers)
     show_result(stats)
-
 
 if __name__ == "__main__":
     main()
